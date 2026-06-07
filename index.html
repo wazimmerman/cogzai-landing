@@ -1,1 +1,923 @@
-<html><p>placeholder</p></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cogzai | Signal Over Noise</title>
+     <meta
+       name="description"
+       content="Cogzai is an AI-native editorial surface for model releases, agent workflows, infrastructure shifts, and the signals that actually matter."
+     />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23c24f2d'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='Georgia, serif' font-size='34' fill='%23fff7eb'%3EC%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --bg-strong: #ebe3d4;
+        --surface: rgba(255, 250, 242, 0.78);
+        --surface-strong: #fff9f0;
+        --ink: #161412;
+        --muted: #5f5a54;
+        --line: rgba(22, 20, 18, 0.14);
+        --accent: #c24f2d;
+        --accent-strong: #8e3117;
+        --accent-soft: #f4c8a3;
+        --shadow: 0 24px 60px rgba(49, 33, 19, 0.12);
+        --radius-xl: 28px;
+        --radius-lg: 22px;
+        --radius-md: 16px;
+        --max-width: 1180px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(194, 79, 45, 0.18), transparent 30%),
+          radial-gradient(circle at right 20%, rgba(135, 165, 151, 0.22), transparent 26%),
+          linear-gradient(180deg, #f7f1e7 0%, #f3ebde 48%, #efe4d3 100%);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      .shell {
+        width: min(calc(100% - 2rem), var(--max-width));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        padding: 1.1rem 0;
+      }
+
+      .topbar-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        font-size: 0.84rem;
+      }
+
+      .brand-mark {
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--accent) 0%, #e2a56f 100%);
+        color: #fff9f0;
+        box-shadow: 0 12px 24px rgba(194, 79, 45, 0.22);
+      }
+
+      .nav {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
+
+      .nav a:hover,
+      .nav a:focus-visible {
+        color: var(--ink);
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-height: 3rem;
+        padding: 0 1.1rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+          transform 180ms ease,
+          border-color 180ms ease,
+          background 180ms ease,
+          color 180ms ease;
+      }
+
+      .button:hover,
+      .button:focus-visible {
+        transform: translateY(-1px);
+      }
+
+      .button-primary {
+        background: var(--ink);
+        color: #fff7eb;
+        box-shadow: 0 14px 30px rgba(22, 20, 18, 0.18);
+      }
+
+      .button-secondary {
+        background: rgba(255, 249, 240, 0.72);
+        color: var(--ink);
+        border-color: var(--line);
+      }
+
+      .hero {
+        padding: 2.2rem 0 4rem;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid rgba(22, 20, 18, 0.1);
+        background: rgba(255, 249, 240, 0.56);
+        color: var(--muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 8px rgba(194, 79, 45, 0.1);
+      }
+
+      .hero-copy h1 {
+        margin: 1rem 0 1rem;
+        font-family: "Instrument Serif", serif;
+        font-size: clamp(3.6rem, 8vw, 6.8rem);
+        line-height: 0.92;
+        font-weight: 400;
+        max-width: 10ch;
+      }
+
+      .hero-copy p {
+        margin: 0;
+        max-width: 38rem;
+        font-size: 1.08rem;
+        line-height: 1.65;
+        color: var(--muted);
+      }
+
+      .hero-actions,
+      .hero-meta {
+        display: flex;
+        gap: 0.85rem;
+        flex-wrap: wrap;
+      }
+
+      .hero-actions {
+        margin-top: 1.6rem;
+      }
+
+      .hero-meta {
+        margin-top: 1.35rem;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .hero-meta span {
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(255, 249, 240, 0.62);
+        border: 1px solid rgba(22, 20, 18, 0.08);
+      }
+
+      .hero-panel {
+        position: relative;
+        padding: 1.25rem;
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(22, 20, 18, 0.1);
+        background:
+          linear-gradient(180deg, rgba(255, 250, 242, 0.94) 0%, rgba(246, 237, 223, 0.92) 100%);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .hero-panel::after {
+        content: "";
+        position: absolute;
+        inset: auto -10% -20% auto;
+        width: 18rem;
+        height: 18rem;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(194, 79, 45, 0.18), transparent 66%);
+      }
+
+      .signal-card {
+        position: relative;
+        z-index: 1;
+        padding: 1rem;
+        border-radius: var(--radius-lg);
+        background: rgba(19, 17, 16, 0.94);
+        color: #f8f0e3;
+      }
+
+      .signal-card-top,
+      .signal-row,
+      .signal-score {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .signal-card-top {
+        margin-bottom: 1rem;
+        color: #c9c0b3;
+        font-size: 0.88rem;
+      }
+
+      .signal-story {
+        padding: 1rem 0;
+        border-top: 1px solid rgba(255, 247, 235, 0.12);
+      }
+
+      .signal-story:first-of-type {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .signal-row strong {
+        display: block;
+        max-width: 18ch;
+        font-size: 1.02rem;
+        line-height: 1.3;
+      }
+
+      .signal-row span,
+      .signal-story p {
+        color: #c9c0b3;
+      }
+
+      .signal-story p {
+        margin: 0.55rem 0 0;
+        font-size: 0.92rem;
+        line-height: 1.55;
+      }
+
+      .signal-score {
+        min-width: 5rem;
+        padding: 0.5rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(255, 247, 235, 0.08);
+      }
+
+      .signal-score strong {
+        font-size: 1.1rem;
+      }
+
+      .stat-grid {
+        position: relative;
+        z-index: 1;
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.85rem;
+      }
+
+      .stat {
+        padding: 0.95rem;
+        border-radius: var(--radius-md);
+        background: rgba(255, 249, 240, 0.78);
+        border: 1px solid rgba(22, 20, 18, 0.08);
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.6rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.45;
+      }
+
+      .section {
+        padding: 1.5rem 0 4rem;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 1.5rem;
+        margin-bottom: 1.4rem;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-family: "Instrument Serif", serif;
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        line-height: 0.98;
+        font-weight: 400;
+      }
+
+      .section-head p {
+        margin: 0;
+        max-width: 34rem;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        padding: 1.3rem;
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        border: 1px solid rgba(22, 20, 18, 0.08);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 16px 40px rgba(57, 41, 26, 0.06);
+      }
+
+      .card h3 {
+        margin: 0 0 0.7rem;
+        font-size: 1.05rem;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .lane-tag {
+        display: inline-block;
+        margin-bottom: 0.8rem;
+        padding: 0.35rem 0.65rem;
+        border-radius: 999px;
+        background: var(--bg-strong);
+        color: var(--accent-strong);
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .briefing {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 1rem;
+      }
+
+      .briefing-board,
+      .briefing-flow {
+        min-height: 100%;
+      }
+
+      .briefing-list {
+        display: grid;
+        gap: 0.9rem;
+      }
+
+      .brief-item {
+        display: grid;
+        gap: 0.5rem;
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        background: var(--surface-strong);
+        border: 1px solid rgba(22, 20, 18, 0.08);
+      }
+
+      .brief-item strong {
+        font-size: 1rem;
+      }
+
+      .brief-item span,
+      .brief-item p {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .brief-item span {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .brief-item p {
+        margin: 0;
+      }
+
+      .process-step {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.9rem;
+        align-items: start;
+        padding: 1rem 0;
+        border-top: 1px solid rgba(22, 20, 18, 0.08);
+      }
+
+      .process-step:first-of-type {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .process-step strong {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--ink);
+        color: #fff8ef;
+        font-size: 0.86rem;
+      }
+
+      .process-step h3 {
+        margin: 0 0 0.3rem;
+        font-size: 1rem;
+      }
+
+      .process-step p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .cta {
+        padding-bottom: 5rem;
+      }
+
+      .cta-panel {
+        padding: 1.4rem;
+        border-radius: var(--radius-xl);
+        background: linear-gradient(135deg, #171412 0%, #2b201a 45%, #b1492b 100%);
+        color: #fff6ea;
+        box-shadow: 0 28px 70px rgba(39, 22, 11, 0.22);
+      }
+
+      .cta-panel h2 {
+        margin: 0 0 0.7rem;
+        font-family: "Instrument Serif", serif;
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        line-height: 0.98;
+        font-weight: 400;
+      }
+
+      .cta-panel p {
+        margin: 0;
+        max-width: 38rem;
+        color: rgba(255, 246, 234, 0.76);
+        line-height: 1.65;
+      }
+
+      .signup {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.75rem;
+        margin-top: 1.4rem;
+      }
+
+      .signup input {
+        min-height: 3.3rem;
+        padding: 0 1rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 246, 234, 0.22);
+        background: rgba(255, 246, 234, 0.12);
+        color: #fff6ea;
+        font: inherit;
+      }
+
+      .signup input::placeholder {
+        color: rgba(255, 246, 234, 0.58);
+      }
+
+      .signup button {
+        background: #fff5e9;
+        color: var(--ink);
+      }
+
+      .signup-note {
+        margin-top: 0.9rem;
+        color: rgba(255, 246, 234, 0.72);
+        font-size: 0.92rem;
+      }
+
+      .footer {
+        padding: 0 0 2rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(22, 20, 18, 0.08);
+      }
+
+      .fade-up {
+        opacity: 0;
+        transform: translateY(18px);
+        animation: fadeUp 700ms ease forwards;
+      }
+
+      .fade-up.delay-1 { animation-delay: 120ms; }
+      .fade-up.delay-2 { animation-delay: 220ms; }
+      .fade-up.delay-3 { animation-delay: 320ms; }
+
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 980px) {
+        .hero-grid,
+        .briefing,
+        .card-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section-head,
+        .footer-inner {
+          flex-direction: column;
+          align-items: start;
+        }
+
+        .hero-copy h1,
+        .section-head h2,
+        .cta-panel h2 {
+          max-width: none;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .topbar-inner,
+        .nav {
+          flex-wrap: wrap;
+        }
+
+        .nav {
+          justify-content: flex-start;
+        }
+
+        .stat-grid,
+        .signup {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding-top: 1rem;
+        }
+
+        .hero-copy h1 {
+          font-size: clamp(3rem, 18vw, 4.5rem);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar shell">
+      <div class="topbar-inner">
+        <a class="brand" href="#top">
+          <span class="brand-mark">C</span>
+          <span>Cogzai</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="#why">Why now</a>
+          <a href="#coverage">Coverage</a>
+          <a href="#briefing">How it works</a>
+          <a class="button button-secondary" href="#join">Join launch list</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero shell">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow fade-up">AI-native editorial surface</div>
+            <h1 class="fade-up delay-1">Signal over noise for people building around AI.</h1>
+            <p class="fade-up delay-2">
+              Cogzai distills model releases, agent workflows, infrastructure shifts, and market signals
+              into operator-grade briefings. Timeliness, credibility, and downstream consequence come first.
+            </p>
+            <div class="hero-actions fade-up delay-2">
+              <a class="button button-primary" href="#join">Get early access</a>
+              <a class="button button-secondary" href="#briefing">See the daily flow</a>
+            </div>
+            <div class="hero-meta fade-up delay-3">
+              <span>Original AI briefings</span>
+              <span>Ranked external signals</span>
+              <span>Curated perspective, not sludge</span>
+            </div>
+          </div>
+
+          <div class="hero-panel fade-up delay-2" aria-label="Sample Cogzai signal dashboard">
+            <div class="signal-card">
+              <div class="signal-card-top">
+                <span>Signal desk</span>
+                <span>Updated in near real time</span>
+              </div>
+
+              <article class="signal-story">
+                <div class="signal-row">
+                  <div>
+                    <span>Lead briefing</span>
+                    <strong>Open-model agents push toward tool-native workflows</strong>
+                  </div>
+                  <div class="signal-score">
+                    <span>score</span>
+                    <strong>92</strong>
+                  </div>
+                </div>
+                <p>
+                  The shift is not about chat novelty anymore. The pressure is moving into permissioning,
+                  tool calls, retries, and real operating surfaces.
+                </p>
+              </article>
+
+              <article class="signal-story">
+                <div class="signal-row">
+                  <div>
+                    <span>What matters</span>
+                    <strong>Cost pressure is now a product design constraint</strong>
+                  </div>
+                  <div class="signal-score">
+                    <span>lane</span>
+                    <strong>Ops</strong>
+                  </div>
+                </div>
+                <p>
+                  Interface choices now imply inference budgets. Cogzai tracks the workflow and business
+                  consequences instead of summarizing hype cycles.
+                </p>
+              </article>
+            </div>
+
+            <div class="stat-grid">
+              <div class="stat">
+                <strong>4</strong>
+                <span>core lanes: news, signals, curation, newsletter</span>
+              </div>
+              <div class="stat">
+                <strong>Fast</strong>
+                <span>built for readers who need the angle before the thread spreads</span>
+              </div>
+              <div class="stat">
+                <strong>Human</strong>
+                <span>reviewable editorial output instead of blind auto-publishing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section shell" id="why">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Why Cogzai</div>
+            <h2>The AI feed is crowded. The useful part is still scarce.</h2>
+          </div>
+          <p>
+            Cogzai exists for founders, operators, and investors who need the consequential part of the AI
+            story. It filters for timeliness, credibility, and downstream impact instead of volume.
+          </p>
+        </div>
+
+        <div class="card-grid">
+          <article class="card">
+            <div class="lane-tag">News</div>
+            <h3>Original reporting built for decisions</h3>
+            <p>
+              Briefings focus on model launches, enterprise adoption, platform shifts, and agent product
+              moves that affect real roadmaps.
+            </p>
+          </article>
+          <article class="card">
+            <div class="lane-tag">Signals</div>
+            <h3>External posts ranked by consequence</h3>
+            <p>
+              X posts, research notes, and operator commentary get distilled for what changed and why it
+              matters beyond the timeline.
+            </p>
+          </article>
+          <article class="card">
+            <div class="lane-tag">Curation</div>
+            <h3>Perspective when outside writing earns it</h3>
+            <p>
+              Cogzai curates essays, founder notes, and technical posts only when they add real context to
+              the market direction.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section shell" id="coverage">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Coverage lanes</div>
+            <h2>Track the stack, not just the spectacle.</h2>
+          </div>
+          <p>
+            Coverage is organized around the operating lanes where AI adoption actually compounds: models,
+            agents, infrastructure, enterprise workflows, and product economics.
+          </p>
+        </div>
+
+        <div class="card-grid">
+          <article class="card">
+            <h3>Model releases</h3>
+            <p>What changed in capability, reliability, eval posture, and deployment reality.</p>
+          </article>
+          <article class="card">
+            <h3>Agent workflows</h3>
+            <p>Where orchestration, permissions, tool use, and workflow ownership create leverage or failure.</p>
+          </article>
+          <article class="card">
+            <h3>Infrastructure shifts</h3>
+            <p>Inference cost, serving constraints, and the platform layer underneath product claims.</p>
+          </article>
+          <article class="card">
+            <h3>Enterprise adoption</h3>
+            <p>Signals from real deployments, internal blockers, compliance pressure, and role design.</p>
+          </article>
+          <article class="card">
+            <h3>Market direction</h3>
+            <p>Which external signals point to durable movement instead of short-lived narrative spikes.</p>
+          </article>
+          <article class="card">
+            <h3>Newsletter brief</h3>
+            <p>A compact digest for readers who want the sharpest movements without opening fifteen tabs first.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section shell" id="briefing">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Daily flow</div>
+            <h2>From chaotic inputs to a reviewable briefing.</h2>
+          </div>
+          <p>
+            The workflow is designed to create clean editorial output. Cogzai ingests noisy inputs, ranks
+            them, shapes them into an angle, and leaves room for human review before publishing.
+          </p>
+        </div>
+
+        <div class="briefing">
+          <div class="card briefing-board">
+            <h3>Sample edition board</h3>
+            <div class="briefing-list">
+              <article class="brief-item">
+                <span>Lead item</span>
+                <strong>Open-model agents push toward tool-native workflows</strong>
+                <p>The center of gravity is moving from demos to systems that search, route, and act.</p>
+              </article>
+              <article class="brief-item">
+                <span>Operator signal</span>
+                <strong>Compute and cost shape the next wave of AI products</strong>
+                <p>Budgeting and latency constraints are now interface decisions, not back-office cleanup.</p>
+              </article>
+              <article class="brief-item">
+                <span>Curation</span>
+                <strong>The economics of AI UX</strong>
+                <p>Useful framing on how every affordance quietly commits you to an inference bill.</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="card briefing-flow">
+            <div class="process-step">
+              <strong>1</strong>
+              <div>
+                <h3>Discover the raw inputs</h3>
+                <p>Pull in platform announcements, external operator signals, and notable essays from across the AI stack.</p>
+              </div>
+            </div>
+            <div class="process-step">
+              <strong>2</strong>
+              <div>
+                <h3>Rank for consequence</h3>
+                <p>Discard generic chatter. Keep what changes product choices, deployment risk, distribution, or market posture.</p>
+              </div>
+            </div>
+            <div class="process-step">
+              <strong>3</strong>
+              <div>
+                <h3>Write the angle</h3>
+                <p>Turn the result into an operator-grade briefing with clear stakes, not recycled summaries.</p>
+              </div>
+            </div>
+            <div class="process-step">
+              <strong>4</strong>
+              <div>
+                <h3>Review before release</h3>
+                <p>Human review remains in the loop so the output stays sharp, defensible, and publication-ready.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section cta shell" id="join">
+        <div class="cta-panel">
+          <div class="eyebrow">Launch access</div>
+          <h2>Get the first Cogzai brief before the noise catches up.</h2>
+          <p>
+            Join the early list for launch updates, preview briefings, and the first public version of the
+            Cogzai editorial surface.
+          </p>
+          <form class="signup" id="signup-form">
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Enter your email for launch updates"
+              aria-label="Email address"
+              required
+            />
+            <button class="button" type="submit">Request early access</button>
+          </form>
+          <div class="signup-note" id="signup-note">
+            No backend is wired yet in v1. This interaction packages the email into your default mail client.
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer shell">
+      <div class="footer-inner">
+        <span>Cogzai v1 landing page</span>
+        <span>AI news, signals, and curation with signal over noise discipline.</span>
+      </div>
+    </footer>
+
+    <script>
+      const form = document.getElementById("signup-form");
+      const emailInput = document.getElementById("email");
+      const note = document.getElementById("signup-note");
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        if (!emailInput.checkValidity()) {
+          note.textContent = "Enter a valid email address to open the early-access draft.";
+          return;
+        }
+
+        const subject = encodeURIComponent("Cogzai early access");
+        const body = encodeURIComponent(
+          "Please add this address to the Cogzai early-access list:\n\n" + emailInput.value
+        );
+
+        window.location.href = "mailto:?subject=" + subject + "&body=" + body;
+        note.textContent = "Drafted an early-access message in your default mail client.";
+      });
+    </script>
+  </body>
+</html>
