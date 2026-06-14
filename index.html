@@ -196,16 +196,25 @@
         font-size: 0.98rem;
       }
 
-      .cta-panel {
+      .form {
         display: grid;
         gap: 0.75rem;
         margin-top: 1.2rem;
       }
 
-      .cta-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+      .form input,
+      .form select {
+        min-height: 2.8rem;
+        width: 100%;
+        padding: 0.7rem 0.9rem;
+        border: 1px solid var(--color-border);
+        border-radius: 0;
+        background: var(--color-panel-low);
+        color: var(--color-text);
+        font: inherit;
+      }
+
+      .form button {
         min-height: 2.8rem;
         border: 1px solid var(--color-ink);
         border-radius: 0;
@@ -217,13 +226,70 @@
         letter-spacing: 0.04em;
         text-transform: uppercase;
         cursor: pointer;
-        padding: 0.7rem 0.9rem;
       }
 
-      .cta-button:hover,
-      .cta-button:focus-visible {
+      .form button:hover,
+      .form button:focus-visible {
         background: var(--color-lime);
         color: var(--color-ink);
+      }
+
+      .form-section {
+        display: grid;
+        gap: 0.45rem;
+      }
+
+      .field-label {
+        font-family: var(--font-label);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-soft);
+      }
+
+      .choice-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.55rem;
+      }
+
+      .choice-chip {
+        position: relative;
+      }
+
+      .choice-chip input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      .choice-chip span {
+        min-height: 2.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.7rem 0.9rem;
+        border: 1px solid var(--color-border);
+        background: var(--color-panel-low);
+        color: var(--color-ink);
+        font-family: var(--font-label);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        text-align: center;
+      }
+
+      .choice-chip input:checked + span {
+        border-color: var(--color-ink);
+        background: var(--color-lime);
+      }
+
+      .choice-chip input:focus-visible + span {
+        outline: 2px solid var(--color-ink);
+        outline-offset: 2px;
       }
 
       .form-note {
@@ -270,6 +336,10 @@
         h1 {
           font-size: clamp(2.6rem, 16vw, 4rem);
         }
+
+        .choice-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
@@ -302,12 +372,45 @@
             <p class="panel-label">Launch updates</p>
             <h2 class="panel-title">Get notified when Cogzai goes live.</h2>
             <p class="panel-copy">
-              Subscribe on the main site to enter the real Cogzai signup flow.
+              Leave your email and preferences to join the launch list.
             </p>
-            <div class="cta-panel">
-              <p class="eyebrow">Subscriber entry</p>
-              <a class="cta-button" href="https://cogzai.wmzm.workers.dev/subscribe">Subscribe on the main site</a>
-            </div>
+            <form class="form" id="signup-form">
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                aria-label="Email address"
+                required
+              />
+              <div class="form-section">
+                <label class="field-label" for="cadence">Cadence</label>
+                <select id="cadence" name="cadence" required>
+                  <option value="Weekly">Weekly</option>
+                  <option value="Daily">Daily</option>
+                  <option value="Monthly">Monthly</option>
+                </select>
+              </div>
+              <fieldset class="form-section">
+                <legend class="field-label">Categories</legend>
+                <div class="choice-grid" role="group" aria-label="Categories">
+                  <label class="choice-chip">
+                    <input type="checkbox" name="categories" value="News" checked />
+                    <span>News</span>
+                  </label>
+                  <label class="choice-chip">
+                    <input type="checkbox" name="categories" value="Signals" />
+                    <span>Signals</span>
+                  </label>
+                  <label class="choice-chip">
+                    <input type="checkbox" name="categories" value="Curated Sources" />
+                    <span>Curated Sources</span>
+                  </label>
+                </div>
+              </fieldset>
+              <button type="submit">Join the list</button>
+              <p class="form-note" id="signup-note" aria-live="polite"></p>
+            </form>
           </aside>
         </section>
       </main>
@@ -319,5 +422,49 @@
         </div>
       </footer>
     </div>
+
+    <script>
+      const form = document.getElementById("signup-form");
+      const emailInput = document.getElementById("email");
+      const cadenceInput = document.getElementById("cadence");
+      const categoryInputs = Array.from(document.querySelectorAll('input[name="categories"]'));
+      const note = document.getElementById("signup-note");
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        if (!emailInput.checkValidity()) {
+          note.textContent = "Enter a valid email address to open the launch-list draft.";
+          return;
+        }
+
+        const selectedCategories = categoryInputs
+          .filter(function (input) {
+            return input.checked;
+          })
+          .map(function (input) {
+            return input.value;
+          });
+
+        if (selectedCategories.length === 0) {
+          note.textContent = "Select at least one category before joining the list.";
+          return;
+        }
+
+        const subject = encodeURIComponent("Cogzai launch list");
+        const body = encodeURIComponent(
+          [
+            "Please add this address to the Cogzai launch list:",
+            "",
+            "Email: " + emailInput.value,
+            "Cadence: " + cadenceInput.value,
+            "Categories: " + selectedCategories.join(", "),
+          ].join("\n")
+        );
+
+        window.location.href = "mailto:?subject=" + subject + "&body=" + body;
+        note.textContent = "Drafted a launch-list email in your default mail client.";
+      });
+    </script>
   </body>
 </html>
