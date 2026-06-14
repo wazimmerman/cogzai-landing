@@ -196,24 +196,16 @@
         font-size: 0.98rem;
       }
 
-      .form {
+      .cta-panel {
         display: grid;
         gap: 0.75rem;
         margin-top: 1.2rem;
       }
 
-      .form input {
-        min-height: 2.8rem;
-        width: 100%;
-        padding: 0.7rem 0.9rem;
-        border: 1px solid var(--color-border);
-        border-radius: 0;
-        background: var(--color-panel-low);
-        color: var(--color-text);
-        font: inherit;
-      }
-
-      .form button {
+      .cta-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         min-height: 2.8rem;
         border: 1px solid var(--color-ink);
         border-radius: 0;
@@ -225,10 +217,11 @@
         letter-spacing: 0.04em;
         text-transform: uppercase;
         cursor: pointer;
+        padding: 0.7rem 0.9rem;
       }
 
-      .form button:hover,
-      .form button:focus-visible {
+      .cta-button:hover,
+      .cta-button:focus-visible {
         background: var(--color-lime);
         color: var(--color-ink);
       }
@@ -299,9 +292,9 @@
               We are refining the product now and will open access soon.
             </p>
             <div class="status-row">
-              <span class="status-chip">AI News</span>
-              <span class="status-chip">X-Signals</span>
-              <span class="status-chip">External Sources</span>
+              <span class="status-chip">News</span>
+              <span class="status-chip">Signals</span>
+              <span class="status-chip">Curated Sources</span>
             </div>
           </div>
 
@@ -309,22 +302,12 @@
             <p class="panel-label">Launch updates</p>
             <h2 class="panel-title">Get notified when Cogzai goes live.</h2>
             <p class="panel-copy">
-              Leave your email to be added to the launch list.
+              Subscribe on the main site to enter the real Cogzai signup flow.
             </p>
-            <form class="form" id="signup-form">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                aria-label="Email address"
-                required
-              />
-              <button type="submit">Join the list</button>
-            </form>
-            <p class="form-note" id="signup-note">
-              This page is temporary. The signup action opens your default mail client for now.
-            </p>
+            <div class="cta-panel">
+              <p class="eyebrow">Subscriber entry</p>
+              <a class="cta-button" href="https://cogzai.wmzm.workers.dev/subscribe">Subscribe on the main site</a>
+            </div>
           </aside>
         </section>
       </main>
@@ -336,28 +319,5 @@
         </div>
       </footer>
     </div>
-
-    <script>
-      const form = document.getElementById("signup-form");
-      const emailInput = document.getElementById("email");
-      const note = document.getElementById("signup-note");
-
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        if (!emailInput.checkValidity()) {
-          note.textContent = "Enter a valid email address to open the launch-list draft.";
-          return;
-        }
-
-        const subject = encodeURIComponent("Cogzai launch list");
-        const body = encodeURIComponent(
-          "Please add this address to the Cogzai launch list:\n\n" + emailInput.value
-        );
-
-        window.location.href = "mailto:?subject=" + subject + "&body=" + body;
-        note.textContent = "Drafted a launch-list email in your default mail client.";
-      });
-    </script>
   </body>
 </html>
