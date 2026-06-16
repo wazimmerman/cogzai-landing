@@ -6,7 +6,7 @@
     <title>Cogzai</title>
     <meta
       name="description"
-      content="Cogzai is preparing a new AI news, signals, and external sources editorial surface."
+      content="Cogzai is preparing a new source for AI news, signals, and curated content."
     />
     <link
       rel="icon"
@@ -358,7 +358,7 @@
             <p class="eyebrow">Coming soon</p>
             <h1>Cogzai is preparing its public launch.</h1>
             <p class="lead">
-              A new editorial surface for AI news, operator signals, and external sources is on the way.
+              A new source for AI news, signals, and curated content is on the way.
               We are refining the product now and will open access soon.
             </p>
             <div class="status-row">
@@ -384,31 +384,43 @@
                 required
               />
               <div class="form-section">
-                <label class="field-label" for="cadence">Cadence</label>
-                <select id="cadence" name="cadence" required>
-                  <option value="Weekly">Weekly</option>
-                  <option value="Daily">Daily</option>
-                  <option value="Monthly">Monthly</option>
+                <label class="field-label" for="frequency">Frequency</label>
+                <select id="frequency" name="frequency" required>
+                  <option value="daily">Daily AI News</option>
+                  <option value="weekly">Weekly Digest</option>
+                  <option value="both">Both</option>
                 </select>
               </div>
               <fieldset class="form-section">
-                <legend class="field-label">Categories</legend>
-                <div class="choice-grid" role="group" aria-label="Categories">
+                <legend class="field-label">Streams</legend>
+                <div class="choice-grid" role="group" aria-label="Streams">
                   <label class="choice-chip">
-                    <input type="checkbox" name="categories" value="News" checked />
-                    <span>News</span>
+                    <input type="checkbox" name="streams" value="agents" />
+                    <span>Agents</span>
                   </label>
                   <label class="choice-chip">
-                    <input type="checkbox" name="categories" value="Signals" />
-                    <span>Signals</span>
+                    <input type="checkbox" name="streams" value="model-releases" />
+                    <span>Model Releases</span>
                   </label>
                   <label class="choice-chip">
-                    <input type="checkbox" name="categories" value="Curated Sources" />
-                    <span>Curated Sources</span>
+                    <input type="checkbox" name="streams" value="developer-tools" />
+                    <span>Developer Tools</span>
+                  </label>
+                  <label class="choice-chip">
+                    <input type="checkbox" name="streams" value="research" />
+                    <span>Research</span>
+                  </label>
+                  <label class="choice-chip">
+                    <input type="checkbox" name="streams" value="enterprise" />
+                    <span>Enterprise</span>
+                  </label>
+                  <label class="choice-chip">
+                    <input type="checkbox" name="streams" value="policy" />
+                    <span>Policy</span>
                   </label>
                 </div>
               </fieldset>
-              <button type="submit">Join the list</button>
+              <button type="submit">Start subscription</button>
               <p class="form-note" id="signup-note" aria-live="polite"></p>
             </form>
           </aside>
@@ -418,7 +430,7 @@
       <footer class="footer">
         <div class="footer-inner">
           <span>Cogzai</span>
-          <span>AI news, signals, and external sources with signal over noise discipline.</span>
+          <span>AI news, signals, and curated content with signal over noise discipline.</span>
         </div>
       </footer>
     </div>
@@ -426,19 +438,19 @@
     <script>
       const form = document.getElementById("signup-form");
       const emailInput = document.getElementById("email");
-      const cadenceInput = document.getElementById("cadence");
-      const categoryInputs = Array.from(document.querySelectorAll('input[name="categories"]'));
+      const frequencyInput = document.getElementById("frequency");
+      const streamInputs = Array.from(document.querySelectorAll('input[name="streams"]'));
       const note = document.getElementById("signup-note");
 
-      form.addEventListener("submit", function (event) {
+      form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
         if (!emailInput.checkValidity()) {
-          note.textContent = "Enter a valid email address to open the launch-list draft.";
+          note.textContent = "Enter a valid email address to start the subscription.";
           return;
         }
 
-        const selectedCategories = categoryInputs
+        const selectedStreams = streamInputs
           .filter(function (input) {
             return input.checked;
           })
@@ -446,24 +458,44 @@
             return input.value;
           });
 
-        if (selectedCategories.length === 0) {
-          note.textContent = "Select at least one category before joining the list.";
+        if (selectedStreams.length === 0) {
+          note.textContent = "Select at least one stream before starting the subscription.";
           return;
         }
 
-        const subject = encodeURIComponent("Cogzai launch list");
-        const body = encodeURIComponent(
-          [
-            "Please add this address to the Cogzai launch list:",
-            "",
-            "Email: " + emailInput.value,
-            "Cadence: " + cadenceInput.value,
-            "Categories: " + selectedCategories.join(", "),
-          ].join("\n")
-        );
+        note.textContent = "Saving subscription...";
 
-        window.location.href = "mailto:?subject=" + subject + "&body=" + body;
-        note.textContent = "Drafted a launch-list email in your default mail client.";
+        try {
+          const response = await fetch("/_emdash/api/plugins/cogzai-ops/subscribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: emailInput.value,
+              frequency: frequencyInput.value,
+              streams: selectedStreams,
+              source: "site",
+            }),
+          });
+
+          const body = await response.json();
+          const data = body.data || body;
+
+          if (!response.ok) {
+            throw new Error(data.error || body.error?.message || "Unable to save subscription.");
+          }
+
+          const manageUrl = data.subscriber?.manageUrl;
+          const confirmUrl = data.subscriber?.confirmUrl;
+          note.innerHTML = manageUrl
+            ? 'Saved. Check your inbox for a confirmation email. Fallback links: <a href="' +
+              (confirmUrl || manageUrl) +
+              '">confirm</a> · <a href="' +
+              manageUrl +
+              '">manage</a>'
+            : "Saved. Check your inbox for a confirmation email.";
+        } catch (error) {
+          note.textContent = error instanceof Error ? error.message : "Subscription failed.";
+        }
       });
     </script>
   </body>
