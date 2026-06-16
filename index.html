@@ -442,6 +442,20 @@
       const streamInputs = Array.from(document.querySelectorAll('input[name="streams"]'));
       const note = document.getElementById("signup-note");
 
+      async function parseJsonResponse(response) {
+        const text = await response.text();
+
+        if (!text) {
+          return {};
+        }
+
+        try {
+          return JSON.parse(text);
+        } catch (error) {
+          throw new Error("Subscription endpoint returned an unreadable response.");
+        }
+      }
+
       form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
@@ -477,7 +491,7 @@
             }),
           });
 
-          const body = await response.json();
+          const body = await parseJsonResponse(response);
           const data = body.data || body;
 
           if (!response.ok) {
